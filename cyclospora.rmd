@@ -1,0 +1,78 @@
+---
+title: "Cyclospora"
+date: "1/7/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load libraries
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(ggthemes)
+```
+
+# Read files
+
+```{r}
+cyclospora <- read_excel("cyclospora.xlsx")
+
+# pivot the column
+longcyclo <- pivot_longer(cyclospora,
+  cols = 2:13,
+  names_to = "month",
+  values_to = "cases"
+)
+
+longcyclo
+
+```
+
+# Adjust themes for ggplot2 
+
+```{r}
+my_theme <- theme_hc() + theme(axis.ticks = element_blank(), legend.title = element_blank(), 
+                               axis.title.x = element_blank(), axis.title.y = element_blank(), 
+                               plot.margin = unit(c(5, 5, 5, 5), "mm"), 
+                               plot.title = element_text(face = "bold", hjust = 0.5)) 
+
+# year 2009 - 2017
+my_colors <- c("#339966", "#CC0033", "#000000", "#FFCC33", "#0066CC","#336666","#330099", "#FF6633","#660099")
+```
+
+
+# Create factor for Month
+
+```{r}
+# get cols names from data 
+month_names <- c(names(cyclospora[2:13])) 
+
+# categorize the month by level order otherwise take default order i.e A-Z
+longcyclo$month <- factor(longcyclo$month, levels = month_names) 
+
+# categorize the year by default numerical order i.e 1-9 
+longcyclo$year <- factor(longcyclo$year)
+
+```
+
+
+# Create the plots
+
+```{r}
+longcyclo %>% 
+  ggplot(aes(x = month, y = cases, color = year, group = year)) +
+  geom_line(size=1.3) + 
+  labs(title = "Chart Title") +
+  scale_color_manual(values = my_colors) +
+  scale_y_continuous(breaks= seq(0, 30, 2)) + # seq(from =, to =, by =) 
+  my_theme 
+  
+```
+
+
+
+
