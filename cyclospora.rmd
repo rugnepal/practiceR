@@ -74,7 +74,7 @@ p <- longcyclo %>%
 
 p
 
-ggsave("cyclospora_2009_2017.jpg", height = 4, width= 6, dpi = "retina")
+ggsave("img/cyclospora_2009_2017.jpg", p, height = 4, width= 6, dpi = "retina")
 ```
 
 
